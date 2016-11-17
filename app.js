@@ -2,13 +2,45 @@
 const request = require('request');
 const express = require('express');
 const session = require('express-session');
+var https = require('https');
 const port = process.env.PORT || 3000;
 const app = express();
 app.set('view engine', 'ejs');
+// hooking up Twilio
+var accountSid = 'ACc0eb88b3db3d429fc7aa9c9f8a018d26'; // Your Account SID from www.twilio.com/console
+var authToken = '342368f85e36b5174b5cdcb87e98a56e';   // Your Auth Token from www.twilio.com/console
+
+var twilio = require('twilio');
+var client = new twilio.RestClient(accountSid, authToken);
+
+client.messages.create({
+    body: 'You have been messaged by Car2claim',
+    to: '+14043077465',  // Text this number
+    from: '+14702357839 ' // From a valid Twilio number
+  }, function(err, message) {
+      if(err) {
+          console.error(err.message);
+      }
+  });
+
+  app.post('https://handler.twilio.com/twiml/EHd2ef0fef33d24ffdaf4f5e427477c0cd', function(req, res) {
+    //Validate that this request really came from Twilio...
+    if (twilio.validateExpressRequest(req, 'YOUR_AUTH_TOKEN')) {
+        var twiml = new twilio.TwimlResponse();
+
+        twiml.say('Hi!  Thanks for checking out my app!');
+
+        res.type('text/xml');
+        res.send(twiml.toString());
+    }
+    else {
+        res.send('you are not twilio.  Buzz off.');
+    }
+});
 
 // Add your automatic client id and client secret here or as environment variables
-const AUTOMATIC_CLIENT_ID = process.env.AUTOMATIC_CLIENT_ID || '2ee3c7c2f4b652fc1ee1'; 
-const AUTOMATIC_CLIENT_SECRET = process.env.AUTOMATIC_CLIENT_SECRET || 'ba1590bcd38c31a310d79726e6be9a89d383aa69'; 
+const AUTOMATIC_CLIENT_ID = process.env.AUTOMATIC_CLIENT_ID || '2ee3c7c2f4b652fc1ee1';
+const AUTOMATIC_CLIENT_SECRET = process.env.AUTOMATIC_CLIENT_SECRET || 'ba1590bcd38c31a310d79726e6be9a89d383aa69';
 
 const oauth2 = require('simple-oauth2')({
   clientID: AUTOMATIC_CLIENT_ID,
@@ -64,7 +96,7 @@ app.get('/redirect', (req, res) => {
     // Attach `token` to the user's session for later use
     // This is where you could save the `token` to a database for later use
     req.session.token = oauth2.accessToken.create(result);
-    
+
     request.get({
       uri: "https://api.automatic.com/trip/",
       headers: {Authorization: 'Bearer ' + req.session.token.token.access_token},
