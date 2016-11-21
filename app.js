@@ -21,28 +21,34 @@ var authToken = '342368f85e36b5174b5cdcb87e98a56e'; // Your Auth Token from www.
 var twilio = require('twilio');
 var client = new twilio.RestClient(accountSid, authToken);
 
-client.messages.create({
-    body: 'You have been messaged by Car2claim',
-    to: '+14043077465', // Text this number
-    from: '+14702357839 ' // From a valid Twilio number
-}, function(err, message) {
-    if (err) {
-        console.error(err.message);
-    }
-});
 
 app.post('https://handler.twilio.com/twiml/EHd2ef0fef33d24ffdaf4f5e427477c0cd', function(req, res) {
     //Validate that this request really came from Twilio...
     if (twilio.validateExpressRequest(req, 'YOUR_AUTH_TOKEN')) {
         var twiml = new twilio.TwimlResponse();
-
-        twiml.say('Hi!  Thanks for checking out my app!');
-
+        // client.messages.create({
+        //     body: 'You have been messaged by Car2claim',
+        //     to: '+14043077465',  // Text this number
+        //     from: '+14702357839 ' // From a valid Twilio number
+        //   }, function(err, message) {
+        //       if(err) {
+        //           console.error(err.message);
+        //       }
+        //   });
         res.type('text/xml');
         res.send(twiml.toString());
     } else {
         res.send('you are not twilio.  Buzz off.');
     }
+});
+
+app.post('/sms', function(req, res) {
+    var twiml = new twilio.TwimlResponse();
+    twiml.message('The Robots are coming! Head for the hills!');
+    res.writeHead(200, {
+        'Content-Type': 'text/xml'
+    });
+    res.end(twiml.toString());
 });
 
 // Add your automatic client id and client secret here or as environment variables

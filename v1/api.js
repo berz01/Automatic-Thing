@@ -2,6 +2,7 @@ var request = require('request');
 var express = require('express');
 var router = express.Router();
 
+
 router.trips = function(req, res, next) {
     request.get({
         uri: "https://api.automatic.com/trip/",
@@ -35,6 +36,7 @@ router.users = function(req, res, next) {
 
     });
 }
+
 router.vehicles = function(req, res, next) {
     request.get({
         uri: "https://api.automatic.com/vehicle/1/",
@@ -50,6 +52,10 @@ router.vehicles = function(req, res, next) {
         }
 
     });
+}
+
+router.sms = function(req, res, next){
+
 }
 
 module.exports = router;
