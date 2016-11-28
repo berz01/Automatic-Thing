@@ -21,7 +21,6 @@ var authToken = '342368f85e36b5174b5cdcb87e98a56e'; // Your Auth Token from www.
 var twilio = require('twilio');
 var client = new twilio.RestClient(accountSid, authToken);
 
-
 app.post('https://handler.twilio.com/twiml/EHd2ef0fef33d24ffdaf4f5e427477c0cd', function(req, res) {
     //Validate that this request really came from Twilio...
     if (twilio.validateExpressRequest(req, 'YOUR_AUTH_TOKEN')) {
