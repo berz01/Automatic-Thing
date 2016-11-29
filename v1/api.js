@@ -9,7 +9,7 @@ api.get('/automatic/trips', automatic.trips);
 api.get('/automatic/users', automatic.users);
 api.get('/automatic/vehicles', automatic.vehicles);
 
-api.get('/verisk', verisk);
-api.get('/service', service);
+// api.get('/verisk', verisk);
+// api.get('/service', service);
 
 module.exports = api;
