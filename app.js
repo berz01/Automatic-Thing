@@ -6,7 +6,7 @@ var https = require('https');
 
 // Internal Api's
 const api = require('./v1/api');
-const SmartCrash = require('./v1/api');
+
 // Server settings
 const port = process.env.PORT || 8080;
 const app = express();
@@ -20,7 +20,7 @@ var authToken = '342368f85e36b5174b5cdcb87e98a56e'; // Your Auth Token from www.
 
 var twilio = require('twilio');
 var client = new twilio.RestClient(accountSid, authToken);
- 
+
 app.post('https://handler.twilio.com/twiml/EHd2ef0fef33d24ffdaf4f5e427477c0cd', function(req, res) {
     //Validate that this request really came from Twilio...
     if (twilio.validateExpressRequest(req, 'YOUR_AUTH_TOKEN')) {
@@ -158,24 +158,7 @@ app.get('/api/v1/*', function(req, res, next) {
     next();
 });
 
-app.get('/api/v1/', function(req, res, next) {
-    console.log("Hit Auth Request");
-    next();
-});
-
-app.get('/api/v1/trips', function(res, req, next) {
-    api.trips(req, res, next);
-});
-app.get('/api/v1/users', function(res, req, next) {
-    api.users(req, res, next);
-});
-app.get('/api/v1/vehicles', function(res, req, next) {
-    api.vehicles(req, res, next);
-});
-
-app.get('/api/v1/sms', function(res, req, next){
-
-});
+app.use('/api/v1/', require("./v1/api"));
 
 // ------------- Old API -----------------
 app.get('/trips', function(req, res) {
@@ -353,8 +336,10 @@ app.get('/claims4', function(req, res) {
     });
 });
 
-
 // Start server
-app.listen(port);
-
-console.log('Express server started on port ' + port);
+var appPages = app.listen(port, function () {
+    console.Log("\nappPages now running on port", appPages.address().port);
+});
+var apiRoutes = api.listen(port, function () {
+    console.Log("\napi now running on port", apiRoutes.address().port);
+});

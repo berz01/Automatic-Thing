@@ -1,61 +1,15 @@
-var request = require('request');
+var automatic = require('./automatic');
+var verisk = require('./verisk');
+var service = require('./service');
+
 var express = require('express');
-var router = express.Router();
+var api = express.Router();
 
+api.get('/automatic/trips', automatic.trips);
+api.get('/automatic/users', automatic.users);
+api.get('/automatic/vehicles', automatic.vehicles);
 
-router.trips = function(req, res, next) {
-    request.get({
-        uri: "https://api.automatic.com/trip/",
-        headers: {
-            Authorization: 'Bearer ' + req.session.token.token.access_token
-        },
-        json: true
-    }, function(e, r, body) {
-        if (e) {
-            next(e);
-        } else {
-            trip = body.results;
-        }
+api.get('/verisk', verisk);
+api.get('/service', service);
 
-    });
-}
-
-router.users = function(req, res, next) {
-    request.get({
-        uri: "https://api.automatic.com/user/me/",
-        headers: {
-            Authorization: 'Bearer ' + req.session.token.token.access_token
-        },
-        json: true
-    }, function(e, r, body) {
-        if (e) {
-            next(e);
-        } else {
-            user = body;
-        }
-
-    });
-}
-
-router.vehicles = function(req, res, next) {
-    request.get({
-        uri: "https://api.automatic.com/vehicle/1/",
-        headers: {
-            Authorization: 'Bearer ' + req.session.token.token.access_token
-        },
-        json: true
-    }, function(e, r, body) {
-        if (e) {
-            next(e);
-        } else {
-            vehicle = body;
-        }
-
-    });
-}
-
-router.sms = function(req, res, next){
-
-}
-
-module.exports = router;
+module.exports = api;
