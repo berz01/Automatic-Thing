@@ -8,7 +8,7 @@ var https = require('https');
 const api = require('./v1/api');
 const SmartCrash = require('./v1/api');
 // Server settings
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 const app = express();
 
 
