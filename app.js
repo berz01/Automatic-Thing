@@ -6,7 +6,7 @@ var https = require('https');
 
 // Internal Api's
 const api = require('./v1/api');
-
+const SmartCrash = require('./v1/api');
 // Server settings
 const port = process.env.PORT || 3000;
 const app = express();
@@ -171,6 +171,10 @@ app.get('/api/v1/users', function(res, req, next) {
 });
 app.get('/api/v1/vehicles', function(res, req, next) {
     api.vehicles(req, res, next);
+});
+
+app.get('/api/v1/sms', function(res, req, next){
+
 });
 
 // ------------- Old API -----------------

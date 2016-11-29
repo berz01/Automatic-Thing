@@ -2,11 +2,12 @@ var http = require('http'),
     express = require('express'),
     session = require('express-session'),
     twilio = require('twilio');
-    var bodyParser = require('body-parser');
 
-    var app = express();
-    app.use(bodyParser.json()); // support json encoded bodies
-    app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+var bodyParser = require('body-parser');
+
+var app = express();
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 app.use(session({ secret: 'sassy' }));
 
