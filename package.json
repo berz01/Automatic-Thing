@@ -27,5 +27,8 @@
   },
   "scripts": {
     "start": "node app"
+  },
+  "devDependencies": {
+    "twilio": "^2.11.1"
   }
 }
