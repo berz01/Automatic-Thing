@@ -14,11 +14,10 @@ var twilio = require('twilio');
 var client = new twilio.RestClient(accountSid, authToken);
 
 client.messages.create({
-    body: 'Our algorithmn has detected you have been in a wreck. Please respond with a yes if you have been in a wreck,''
-    No if you havent, and Emergency if you need our HERO truck to come by',
+    body: 'Our algorithmn has detected you have been in a wreck. Please respond with a yes if you have been in a wreck, No if you havent, and Emergency if you need our HERO truck to come by',
     to: '+14043077465',  // Text this number
     from: '+14702357839 ' // From a valid Twilio number
-    
+
   }, function(err, message) {
       if(err) {
           console.error(err.message);
