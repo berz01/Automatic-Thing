@@ -27,5 +27,8 @@
   },
   "scripts": {
     "start": "node app"
+  },
+  "devDependencies": {
+    "simple-oauth2": "^0.7.0"
   }
 }
