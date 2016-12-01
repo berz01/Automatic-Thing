@@ -1,6 +1,8 @@
 /**
  *
  * @author
+ * Taylor Ereio and Barrett Davis
+ *
  * @file
  * Provides REST API calls for Autmoatic using promises
  *
