@@ -124,9 +124,9 @@ app.get('/claims', function(req, res) {
                 user: user
             })
         })
-        .catch(function(err)) {
+        .catch(function(err) {
             console.log(err);
-        };
+        });
 
 });
 
@@ -145,9 +145,9 @@ app.get('/claims2', function(req, res) {
                 user: user
             })
         })
-        .catch(function(err)) {
+        .catch(function(err) {
             console.log(err);
-        };
+        });
 });
 
 app.get('/claims3', function(req, res) {
@@ -165,9 +165,9 @@ app.get('/claims3', function(req, res) {
                 user: user
             })
         })
-        .catch(function(err)) {
+        .catch(function(err){
             console.log(err);
-        };
+        });
 });
 
 app.get('/claims', function(req, res) {
@@ -185,9 +185,9 @@ app.get('/claims', function(req, res) {
                 user: user
             })
         })
-        .catch(function(err)) {
+        .catch(function(err) {
             console.log(err);
-        };
+        });
 });
 
 app.get('/claims4', function(req, res) {
