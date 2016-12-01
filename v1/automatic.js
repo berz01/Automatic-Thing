@@ -1,4 +1,15 @@
-var request = require('request');
+/**
+ *
+ * @author
+ * @file
+ * Provides REST API calls for Autmoatic using promises
+ *
+
+ * Framework References
+ * bluebird - http://bluebirdjs.com/docs/getting-started.html
+ * Request-Promise - https://github.com/request/request-promise/
+ */
+var rp = require('request-promise');
 
 // Add your automatic client id and client secret here or as environment variables
 const AUTOMATIC_CLIENT_ID = process.env.AUTOMATIC_CLIENT_ID || '2ee3c7c2f4b652fc1ee1';
@@ -20,66 +31,50 @@ var automatic = automatic || {
 
 };
 
-automatic.trips = function(req, res, next) {
-    request.get({
+automatic.trips = function(req) {
+    // return body.results;
+    return rp.get({
         uri: "https://api.automatic.com/trip/",
         headers: {
             Authorization: 'Bearer ' + req.session.token.token.access_token
         },
         json: true
-    }, function(e, r, body) {
-        if (e) {
-            next(e);
-        } else {
-            trip = body.results;
-        }
-
     });
 }
 
-automatic.users = function(req, res, next) {
-    request.get({
+automatic.users = function(req) {
+    // user = body;
+
+    return rp.get({
         uri: "https://api.automatic.com/user/me/",
         headers: {
             Authorization: 'Bearer ' + req.session.token.token.access_token
         },
         json: true
-    }, function(e, r, body) {
-        if (e) {
-            next(e);
-        } else {
-            user = body;
-        }
     });
 }
 
-automatic.vehicles = function(req, res, next) {
-    request.get({
+automatic.vehicles = function(req) {
+    // vehicle = body;
+
+    return rp.get({
         uri: "https://api.automatic.com/vehicle/1/",
         headers: {
             Authorization: 'Bearer ' + req.session.token.token.access_token
         },
         json: true
-    }, function(e, r, body) {
-        if (e) {
-            next(e);
-        } else {
-            vehicle = body;
-        }
     });
 }
 
-automatic.vehicle = function(req, res, next) {
-    request.get({
+automatic.vehicle = function(req) {
+    // vehicle = body.results[0];
+
+    return rp.get({
         uri: "https://api.automatic.com/vehicle/",
         headers: {
             Authorization: 'Bearer ' + req.session.token.token.access_token
         },
         json: true
-    }, function(e, r, body) {
-        if (e) {} else {
-            vehicle = body.results[0];
-        }
     });
 }
 
@@ -98,44 +93,11 @@ automatic.welcome = function(req, res) {
     if (req.session.token) {
         // Display token to authenticated user
         console.log('Automatic access token', req.session.token.token.access_token);
-        res.send('You are logged in.<br>Access Token: ' + req.session.token.token.access_token + "<br />" + printTrips());
+        return res.send('You are logged in.<br>Access Token: ' + req.session.token.token.access_token + "<br />" + printTrips());
     } else {
         // No token, so redirect to login
-        res.redirect('/');
+        return res.redirect('/');
     }
 }
-// Callback service parsing the authorization token and asking for the access token
-automatic.redirect = function(req,res,next){
-  const code = req.query.code;
-
-  function saveToken(error, result) {
-      if (error) {
-          console.log('Access token error', error.message);
-          res.send('Access token error: ' + error.message);
-          return;
-      }
-
-      // Attach `token` to the user's session for later use
-      // This is where you could save the `token` to a database for later use
-      req.session.token = oauth2.accessToken.create(result);
-
-      request.get({
-          uri: "https://api.automatic.com/trip/",
-          headers: {
-              Authorization: 'Bearer ' + req.session.token.token.access_token
-          },
-          json: true
-      }, function(e, r, body) {
-          if (e) {} else {
-              trips = body.results;
-          }
-          res.redirect('/trips');
-      });
-  }
-
-  oauth2.authCode.getToken({
-      code: code
-  }, saveToken);
-} 
 
 module.exports = automatic;

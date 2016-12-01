@@ -2,53 +2,24 @@
 const request = require('request');
 const express = require('express');
 const session = require('express-session');
-var https = require('https');
+const Promise = require('bluebird');
+const https = require('https');
+const autoapi = require('./v1/automatic')
 
 // Server settings
 const port = process.env.PORT || 8080;
 const app = express();
 
- // Setting view engine
+// Setting view engine
 app.set('view engine', 'ejs');
 
-// hooking up Twilio
-var accountSid = 'ACc0eb88b3db3d429fc7aa9c9f8a018d26'; // Your Account SID from www.twilio.com/console
-var authToken = '342368f85e36b5174b5cdcb87e98a56e'; // Your Auth Token from www.twilio.com/console
-
-var twilio = require('twilio');
-var client = new twilio.RestClient(accountSid, authToken);
-
-
 // New API
-
 app.use('/api/v1', require("./v1/api"));
 
 app.get('/api/v1/*', function(req, res, next) {
     console.log("Hit Auth Filter For Access");
     next();
-});
-  
-app.post('https://handler.twilio.com/twiml/EHd2ef0fef33d24ffdaf4f5e427477c0cd', function(req, res) {
-    //Validate that this request really came from Twilio...
-    if (twilio.validateExpressRequest(req, 'YOUR_AUTH_TOKEN')) {
-        var twiml = new twilio.TwimlResponse();
-
-        res.type('text/xml');
-        res.send(twiml.toString());
-    } else {
-        res.send('you are not twilio.  Buzz off.');
-    }
-});
-
-app.post('/sms', function(req, res) {
-    var twiml = new twilio.TwimlResponse();
-    twiml.message('The Robots are coming! Head for the hills!');
-    res.writeHead(200, {
-        'Content-Type': 'text/xml'
-    });
-    res.end(twiml.toString());
-});
-
+}); 
 
 // Local caching
 var trips;
@@ -66,6 +37,26 @@ function printTrips() {
     return tripIds;
 }
 
+function modTrips(trips){
+  for (var i = 0; i < trips.length; i++) {
+      if (i % 2 == 0) {
+          trips[i].ignition_on = 0;
+          trips[i].ignition_off = -1;
+      } else {
+          trips[i].ignition_off = 1;
+          trips[i].ignition_on = -1;
+      }
+
+
+      if (Math.floor(Math.random() * 20) > 15) {
+          trips[i].engine_temperature = Math.floor(Math.random() * 17) + 500;
+      } else {
+          trips[i].engine_temperature = Math.floor(Math.random() * 17) + 200;
+      }
+  }
+
+  return trips;
+}
 
 // Enable sessions
 app.use(session({
@@ -80,26 +71,46 @@ app.get('/', (req, res) => {
     res.send('<div><img src="http://i.imgur.com/3U6rueQ.jpg" alt="Smiley face"></div><h1><a href="/auth">Log in with Automatic</a></h1>');
 });
 
+
+// Callback service parsing the authorization token and asking for the access token
+app.get('/redirect', (req, res) => {
+    const code = req.query.code;
+
+    function saveToken(error, result) {
+        if (error) {
+            console.log('Access token error', error.message);
+            res.send('Access token error: ' + error.message);
+            return;
+        }
+
+        // Attach `token` to the user's session for later use
+        // This is where you could save the `token` to a database for later use
+        req.session.token = oauth2.accessToken.create(result);
+
+        request.get({
+            uri: "https://api.automatic.com/trip/",
+            headers: {
+                Authorization: 'Bearer ' + req.session.token.token.access_token
+            },
+            json: true
+        }, function(e, r, body) {
+            if (e) {} else {
+                trips = body.results;
+            }
+            res.redirect('/trips');
+        });
+    }
+
+    oauth2.authCode.getToken({
+        code: code
+    }, saveToken);
+});
+
 // ------------- Old API -----------------
 app.get('/trips', function(req, res) {
     console.log("/trips");
 
-    for (var i = 0; i < trips.length; i++) {
-        if (i % 2 == 0) {
-            trips[i].ignition_on = 0;
-            trips[i].ignition_off = -1;
-        } else {
-            trips[i].ignition_off = 1;
-            trips[i].ignition_on = -1;
-        }
-
-
-        if (Math.floor(Math.random() * 20) > 15) {
-            trips[i].engine_temperature = Math.floor(Math.random() * 17) + 500;
-        } else {
-            trips[i].engine_temperature = Math.floor(Math.random() * 17) + 200;
-        }
-    }
+    trips = modTrips(trips);
 
     res.render('trips', {
         trips: trips
@@ -108,144 +119,83 @@ app.get('/trips', function(req, res) {
 
 app.get('/claims', function(req, res) {
     console.log("/claims");
-    request.get({
-      uri
-    });
-    request.get({
-        uri: "https://api.automatic.com/user/me/",
-        headers: {
-            Authorization: 'Bearer ' + req.session.token.token.access_token
-        },
-        json: true
-    }, function(e, r, body) {
-        if (e) {} else {
-            user = body;
 
-            request.get({
-                uri: "https://api.automatic.com/vehicle/",
-                headers: {
-                    Authorization: 'Bearer ' + req.session.token.token.access_token
-                },
-                json: true
-            }, function(e, r, body) {
-                if (e) {} else {
-                    vehicle = body.results[0];
-                }
-            });
+    var parallel = function(req) {
+        return Promise.all([autoapi.users(req), autoapi.vehicle(req)])
+    }
 
+    parallel(req)
+        .spread(function(user, vehicle) {
             res.render('claims', {
                 trips: trips,
-                vehicle: vehicle,
+                vehicle: vehicle.results[0],
                 user: user
-            });
+            })
+        })
+        .catch(function(err)) {
+            console.log(err);
+        };
 
-        }
-    });
 });
 
 app.get('/claims2', function(req, res) {
     console.log("/claims2");
 
-    request.get({
-        uri: "https://api.automatic.com/user/me/",
-        headers: {
-            Authorization: 'Bearer ' + req.session.token.token.access_token
-        },
-        json: true
-    }, function(e, r, body) {
-        if (e) {} else {
-            user = body;
+    var parallel = function(req) {
+        return Promise.all([autoapi.users(req), autoapi.vehicle(req)])
+    }
 
-            request.get({
-                uri: "https://api.automatic.com/vehicle/",
-                headers: {
-                    Authorization: 'Bearer ' + req.session.token.token.access_token
-                },
-                json: true
-            }, function(e, r, body) {
-                if (e) {} else {
-                    vehicle = body.results[0];
-                }
-            });
-
-            res.render('claims2', {
+    parallel(req)
+        .spread(function(user, vehicle) {
+            res.render('claims', {
                 trips: trips,
-                vehicle: vehicle,
+                vehicle: vehicle.results[0],
                 user: user
-            });
-
-        }
-    });
+            })
+        })
+        .catch(function(err)) {
+            console.log(err);
+        };
 });
 
 app.get('/claims3', function(req, res) {
     console.log("/claims3");
 
-    request.get({
-        uri: "https://api.automatic.com/user/me/",
-        headers: {
-            Authorization: 'Bearer ' + req.session.token.token.access_token
-        },
-        json: true
-    }, function(e, r, body) {
-        if (e) {} else {
-            user = body;
+    var parallel = function(req) {
+        return Promise.all([autoapi.users(req), autoapi.vehicle(req)])
+    }
 
-            request.get({
-                uri: "https://api.automatic.com/vehicle/",
-                headers: {
-                    Authorization: 'Bearer ' + req.session.token.token.access_token
-                },
-                json: true
-            }, function(e, r, body) {
-                if (e) {} else {
-                    vehicle = body.results[0];
-                }
-            });
-
-            res.render('claims3', {
+    parallel(req)
+        .spread(function(user, vehicle) {
+            res.render('claims', {
                 trips: trips,
-                vehicle: vehicle,
+                vehicle: vehicle.results[0],
                 user: user
-            });
-
-        }
-    });
+            })
+        })
+        .catch(function(err)) {
+            console.log(err);
+        };
 });
 
 app.get('/claims', function(req, res) {
     console.log("/claims");
 
-    request.get({
-        uri: "https://api.automatic.com/user/me/",
-        headers: {
-            Authorization: 'Bearer ' + req.session.token.token.access_token
-        },
-        json: true
-    }, function(e, r, body) {
-        if (e) {} else {
-            user = body;
+    var parallel = function(req) {
+        return Promise.all([autoapi.users(req), autoapi.vehicle(req)])
+    }
 
-            request.get({
-                uri: "https://api.automatic.com/vehicle/",
-                headers: {
-                    Authorization: 'Bearer ' + req.session.token.token.access_token
-                },
-                json: true
-            }, function(e, r, body) {
-                if (e) {} else {
-                    vehicle = body.results[0];
-                }
-            });
-
+    parallel(req)
+        .spread(function(user, vehicle) {
             res.render('claims', {
                 trips: trips,
-                vehicle: vehicle,
+                vehicle: vehicle.results[0],
                 user: user
-            });
-
-        }
-    });
+            })
+        })
+        .catch(function(err)) {
+            console.log(err);
+        };
 });
 
 app.get('/claims4', function(req, res) {
@@ -259,6 +209,6 @@ app.get('/claims4', function(req, res) {
 });
 
 // Start server
-var appPages = app.listen(port, function () {
+var appPages = app.listen(port, function() {
     console.log("\nappPages now running on port", appPages.address().port);
 });
