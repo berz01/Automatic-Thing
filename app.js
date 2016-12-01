@@ -8,7 +8,7 @@ var https = require('https');
 const port = process.env.PORT || 8080;
 const app = express();
 
-
+ // Setting view engine
 app.set('view engine', 'ejs');
 
 // hooking up Twilio
@@ -18,19 +18,21 @@ var authToken = '342368f85e36b5174b5cdcb87e98a56e'; // Your Auth Token from www.
 var twilio = require('twilio');
 var client = new twilio.RestClient(accountSid, authToken);
 
+
+// New API
+
+app.use('/api/v1', require("./v1/api"));
+
+app.get('/api/v1/*', function(req, res, next) {
+    console.log("Hit Auth Filter For Access");
+    next();
+});
+  
 app.post('https://handler.twilio.com/twiml/EHd2ef0fef33d24ffdaf4f5e427477c0cd', function(req, res) {
     //Validate that this request really came from Twilio...
     if (twilio.validateExpressRequest(req, 'YOUR_AUTH_TOKEN')) {
         var twiml = new twilio.TwimlResponse();
-        // client.messages.create({
-        //     body: 'You have been messaged by Car2claim',
-        //     to: '+14043077465',  // Text this number
-        //     from: '+14702357839 ' // From a valid Twilio number
-        //   }, function(err, message) {
-        //       if(err) {
-        //           console.error(err.message);
-        //       }
-        //   });
+
         res.type('text/xml');
         res.send(twiml.toString());
     } else {
@@ -45,22 +47,6 @@ app.post('/sms', function(req, res) {
         'Content-Type': 'text/xml'
     });
     res.end(twiml.toString());
-});
-
-// Add your automatic client id and client secret here or as environment variables
-const AUTOMATIC_CLIENT_ID = process.env.AUTOMATIC_CLIENT_ID || '2ee3c7c2f4b652fc1ee1';
-const AUTOMATIC_CLIENT_SECRET = process.env.AUTOMATIC_CLIENT_SECRET || 'ba1590bcd38c31a310d79726e6be9a89d383aa69';
-
-const oauth2 = require('simple-oauth2')({
-    clientID: AUTOMATIC_CLIENT_ID,
-    clientSecret: AUTOMATIC_CLIENT_SECRET,
-    site: 'https://accounts.automatic.com',
-    tokenPath: '/oauth/access_token'
-});
-
-// Authorization uri definition
-const authorizationUri = oauth2.authCode.authorizeURL({
-    scope: 'scope:user:profile scope:trip scope:location scope:vehicle:profile scope:vehicle:events scope:behavior'
 });
 
 
@@ -88,74 +74,11 @@ app.use(session({
     saveUninitialized: true
 }));
 
-// Initial page redirecting to Automatic's oAuth page
-app.get('/auth', (req, res) => {
-    res.redirect(authorizationUri);
-});
-
-// Callback service parsing the authorization token and asking for the access token
-app.get('/redirect', (req, res) => {
-    const code = req.query.code;
-
-    function saveToken(error, result) {
-        if (error) {
-            console.log('Access token error', error.message);
-            res.send('Access token error: ' + error.message);
-            return;
-        }
-
-        // Attach `token` to the user's session for later use
-        // This is where you could save the `token` to a database for later use
-        req.session.token = oauth2.accessToken.create(result);
-
-        request.get({
-            uri: "https://api.automatic.com/trip/",
-            headers: {
-                Authorization: 'Bearer ' + req.session.token.token.access_token
-            },
-            json: true
-        }, function(e, r, body) {
-            if (e) {} else {
-                trips = body.results;
-            }
-            res.redirect('/trips');
-        });
-    }
-
-    oauth2.authCode.getToken({
-        code: code
-    }, saveToken);
-});
-
-app.get('/welcome', (req, res) => {
-    if (req.session.token) {
-        // Display token to authenticated user
-        console.log('Automatic access token', req.session.token.token.access_token);
-        res.send('You are logged in.<br>Access Token: ' + req.session.token.token.access_token + "<br />" + printTrips());
-    } else {
-        // No token, so redirect to login
-        res.redirect('/');
-    }
-});
-
-app.get('/dashboard', function(req, res) {
-    console.log("/dashboard");
-
-    res.render('dashboard-new', {});
-});
 
 // Main page of app with link to log in
 app.get('/', (req, res) => {
     res.send('<div><img src="http://i.imgur.com/3U6rueQ.jpg" alt="Smiley face"></div><h1><a href="/auth">Log in with Automatic</a></h1>');
 });
-
-// ------------- New API -----------------
-app.get('/api/v1/*', function(req, res, next) {
-    console.log("Hit Auth Filter For Access");
-    next();
-});
-
-app.use('/api/v1/', require("./v1/api"));
 
 // ------------- Old API -----------------
 app.get('/trips', function(req, res) {
@@ -185,7 +108,9 @@ app.get('/trips', function(req, res) {
 
 app.get('/claims', function(req, res) {
     console.log("/claims");
-
+    request.get({
+      uri
+    });
     request.get({
         uri: "https://api.automatic.com/user/me/",
         headers: {
