@@ -19,7 +19,7 @@ app.use('/api/v1', require("./v1/api"));
 app.get('/api/v1/*', function(req, res, next) {
     console.log("Hit Auth Filter For Access");
     next();
-}); 
+});
 
 // Local caching
 var trips;
@@ -37,25 +37,21 @@ function printTrips() {
     return tripIds;
 }
 
-function modTrips(trips){
-  for (var i = 0; i < trips.length; i++) {
-      if (i % 2 == 0) {
-          trips[i].ignition_on = 0;
-          trips[i].ignition_off = -1;
-      } else {
-          trips[i].ignition_off = 1;
-          trips[i].ignition_on = -1;
-      }
+function modTrips(trips) {
+    for (var i = 0; i < trips.length; i++) {
+        if (i % 2 == 0) {
+            trips[i].ignition_on = 0;
+            trips[i].ignition_off = -1;
+        } else {
+            trips[i].ignition_off = 1;
+            trips[i].ignition_on = -1;
+        }
 
+        var temp = Math.floor(Math.random() * 20) > 15 ? 500 : 200;
+        trips[i].engine_temperature = Math.floor(Math.random() * 17) + temp;
+    }
 
-      if (Math.floor(Math.random() * 20) > 15) {
-          trips[i].engine_temperature = Math.floor(Math.random() * 17) + 500;
-      } else {
-          trips[i].engine_temperature = Math.floor(Math.random() * 17) + 200;
-      }
-  }
-
-  return trips;
+    return trips;
 }
 
 // Enable sessions
@@ -87,18 +83,14 @@ app.get('/redirect', (req, res) => {
         // This is where you could save the `token` to a database for later use
         req.session.token = oauth2.accessToken.create(result);
 
-        request.get({
-            uri: "https://api.automatic.com/trip/",
-            headers: {
-                Authorization: 'Bearer ' + req.session.token.token.access_token
-            },
-            json: true
-        }, function(e, r, body) {
-            if (e) {} else {
-                trips = body.results;
-            }
-            res.redirect('/trips');
-        });
+        automatic.trips(req)
+            .then(function(body) {
+              trips = body.results;
+              res.redirect('/trips');
+            })
+            .catch(function(err){
+              console.log(err);
+            }); 
     }
 
     oauth2.authCode.getToken({
