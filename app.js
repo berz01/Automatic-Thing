@@ -284,13 +284,8 @@ app.get('/claims', function(req, res) {
 });
 
 app.get('/claims4', function(req, res) {
-  console.log("/claims4");
-
-  res.render('claims4', {
-    trips: trips,
-    vehicle: vehicle,
-    user: user
-  });
+    console.log("/claims4");
+    res.render('<a href="http://i.imgur.com/8jjUtbz.png"> <img src="http://i.imgur.com/8jjUtbz.png" title="source:imgur.com"></a>');
 });
 
 app.get('/dashboard', function(req, res) {
