@@ -24,6 +24,7 @@ const oauth2 = require('simple-oauth2')({
     tokenPath: '/oauth/access_token'
 });
 
+
 // Authorization uri definition
 const authorizationUri = oauth2.authCode.authorizeURL({
     scope: 'scope:user:profile scope:trip scope:location scope:vehicle:profile scope:vehicle:events scope:behavior'

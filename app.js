@@ -26,6 +26,18 @@ var trips;
 var vehicle;
 var user;
 
+
+// Add your automatic client id and client secret here or as environment variables
+const AUTOMATIC_CLIENT_ID = process.env.AUTOMATIC_CLIENT_ID || '2ee3c7c2f4b652fc1ee1';
+const AUTOMATIC_CLIENT_SECRET = process.env.AUTOMATIC_CLIENT_SECRET || 'ba1590bcd38c31a310d79726e6be9a89d383aa69';
+
+const oauth2 = require('simple-oauth2')({
+    clientID: AUTOMATIC_CLIENT_ID,
+    clientSecret: AUTOMATIC_CLIENT_SECRET,
+    site: 'https://accounts.automatic.com',
+    tokenPath: '/oauth/access_token'
+});
+
 // Printing trips from api
 function printTrips() {
     var tripIds = "";
