@@ -10,16 +10,7 @@ const autoapi = require('./v1/automatic')
 const port = process.env.PORT || 8080;
 const app = express();
 
-// Setting view engine
-app.set('view engine', 'ejs');
 
-// New API
-app.use('/api/v1', require("./v1/api"));
-
-app.get('/api/v1/*', function(req, res, next) {
-    console.log("Hit Auth Filter For Access");
-    next();
-});
 
 // Local caching
 var trips;
@@ -205,6 +196,17 @@ app.get('/claims', function(req, res) {
 app.get('/claims4', function(req, res) {
     console.log("/claims4");
     res.render('<a href="http://i.imgur.com/8jjUtbz.png"> <img src="http://i.imgur.com/8jjUtbz.png" title="source:imgur.com"></a>');
+});
+
+// Setting view engine
+app.set('view engine', 'ejs');
+
+// New API
+app.use('/api/v1', require("./v1/api"));
+
+app.get('/api/v1/*', function(req, res, next) {
+    console.log("Hit Auth Filter For Access");
+    next();
 });
 
 // Start server
