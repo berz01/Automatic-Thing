@@ -98,7 +98,7 @@ app.get('/redirect', (req, res) => {
         autoapi.trips(req)
             .then(function(body) {
               trips = body.results;
-              res.redirect('/trips');
+              res.redirect('/automatic/trips');
             })
             .catch(function(err){
               console.log(err);
