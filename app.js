@@ -95,7 +95,7 @@ app.get('/redirect', (req, res) => {
         // This is where you could save the `token` to a database for later use
         req.session.token = oauth2.accessToken.create(result);
 
-        automatic.trips(req)
+        autoapi.trips(req)
             .then(function(body) {
               trips = body.results;
               res.redirect('/trips');
