@@ -64,7 +64,7 @@ app.use(session({
 
 // Main page of app with link to log in
 app.get('/', (req, res) => {
-    res.send('<div><img src="http://i.imgur.com/3U6rueQ.jpg" alt="Smiley face"></div><h1><a href="api/v1/auth">Log in with Automatic</a></h1>');
+    res.send('<div><img src="http://i.imgur.com/3U6rueQ.jpg" alt="Smiley face"></div><h1><a href="api/v1/automatic/auth">Log in with Automatic</a></h1>');
 });
 
 
