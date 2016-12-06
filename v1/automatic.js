@@ -31,7 +31,7 @@ const authorizationUri = oauth2.authCode.authorizeURL({
 });
 
 var automatic = automatic || {
-
+    api: {}
 };
 
 automatic.trips = function(req) {
@@ -81,29 +81,29 @@ automatic.vehicle = function(req) {
     });
 }
 
-automatic.api.trips = function(){
-  automatic.trips()
+automatic.api.trips = function(req, res){
+  automatic.trips(req)
     .then(function(result){
     res.send(result);
   });
 }
 
-automatic.api.users = function(){
-  automatic.trips()
+automatic.api.users = function(req, res){
+  automatic.users(req)
     .then(function(result){
     res.send(result);
   });
 }
 
-automatic.api.vehicles = function(){
-  automatic.trips()
+automatic.api.vehicles = function(req, res){
+  automatic.vehicles(req)
     .then(function(result){
     res.send(result);
   });
 }
 
-automatic.api.vehicle = function(){
-  automatic.trips()
+automatic.api.vehicle = function(req, res){
+  automatic.vehicle(eq)
     .then(function(result){
     res.send(result);
   });
