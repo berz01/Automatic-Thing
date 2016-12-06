@@ -81,6 +81,34 @@ automatic.vehicle = function(req) {
     });
 }
 
+automatic.api.trips = function(){
+  automatic.trips()
+    .then(function(result){
+    res.send(result);
+  });
+}
+
+automatic.api.users = function(){
+  automatic.trips()
+    .then(function(result){
+    res.send(result);
+  });
+}
+
+automatic.api.vehicles = function(){
+  automatic.trips()
+    .then(function(result){
+    res.send(result);
+  });
+}
+
+automatic.api.vehicle = function(){
+  automatic.trips()
+    .then(function(result){
+    res.send(result);
+  });
+}
+
 // Initial page redirecting to Automatic's oAuth page
 automatic.auth = function(req, res, next){
     res.redirect(authorizationUri);
