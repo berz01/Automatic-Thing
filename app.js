@@ -4,13 +4,11 @@ const express = require('express');
 const session = require('express-session');
 const Promise = require('bluebird');
 const https = require('https');
-const autoapi = require('./v1/automatic')
+const autoapi = require('./v1/controllers/automatic/automatic.js');
 
 // Server settings
 const port = process.env.PORT || 8080;
 const app = express();
-
-
 
 // Local caching
 var trips;

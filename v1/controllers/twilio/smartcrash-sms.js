@@ -21,7 +21,8 @@ app.use(session({
 var serverSMS = {
     serverNumber: '+14702357839',
     defaultCrashMessage: "Our algorithmn has detected you have been in a wreck. Please respond with a yes if you have been in a wreck, No if you havent, and Emergency if you need our HERO truck to come by";
-}
+};
+
 var userProfile = {
     numberOfCustomer: "+14043077465"
 };
@@ -43,8 +44,7 @@ var sendServerSMS = function(number, message)
 app.post('https://handler.twilio.com/twiml/EHd2ef0fef33d24ffdaf4f5e427477c0cd', function(req, res) {
     //Validate that this request really came from Twilio...
     if (twilio.validateExpressRequest(req, 'YOUR_AUTH_TOKEN')) {
-        var twiml = new twilio.TwimlResponse();
-
+        var twiml = new twilio.TwimlResponse(); 
         res.type('text/xml');
         res.send(twiml.toString());
     } else {
