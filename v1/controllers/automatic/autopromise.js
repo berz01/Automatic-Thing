@@ -51,4 +51,4 @@ automatic.vehicle = function(req) {
     });
 }
 
-return automatic;
+module.exports = automatic;

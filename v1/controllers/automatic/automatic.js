@@ -26,6 +26,7 @@ const oauth2 = require('simple-oauth2')({
 
 
 const automatic = require('./autopromise.js');
+
 // Authorization uri definition
 const authorizationUri = oauth2.authCode.authorizeURL({
     scope: 'scope:user:profile scope:trip scope:location scope:vehicle:profile scope:vehicle:events scope:behavior'

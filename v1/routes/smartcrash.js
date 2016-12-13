@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var api = express.Router();
 
-var smartcrash = require('../controllers/twilio/smartcrash-sms.js');
+var smartcrash = require('../controllers/twilio/api.smartcrash.js');
 
 api.use(bodyParser.json()); // support json encoded bodies
 api.use(bodyParser.urlencoded({
