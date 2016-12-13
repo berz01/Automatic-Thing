@@ -20,7 +20,11 @@ smartcrash.sendSms = function(number, message) {
     };
 
     twilioClient.messages.create(contents, function(err, message) {
+      if(err != null && err.message != null){
         console.error(err.message);
+      } else {
+        console.log("Message Sent");
+      }
     });
 }
 

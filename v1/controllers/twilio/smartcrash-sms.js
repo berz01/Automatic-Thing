@@ -43,6 +43,7 @@ exports.crashDetection = function(req, res){
     if(req.body.crashDetection || req.params.status){
       smartcrash.sendSms(clientSms.numberOfCustomer, defaultCrashMessage);
     }
+    res.send('Crash Detection hit');
 };
 
 exports.getUsers = smartcrash.getUsers;
