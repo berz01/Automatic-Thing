@@ -5,7 +5,7 @@ var authToken = '342368f85e36b5174b5cdcb87e98a56e'; // Your Auth Token from www.
 // Send using twilito rest client
 var twilioClient = new twilio.RestClient(accountSid, authToken);
 
-// Dummy Data, should come from another service, including twilioClient 
+// Dummy Data, should come from another service, including twilioClient
 var serverSMS = {
     serverNumber: '+14702357839',
 };
@@ -13,13 +13,13 @@ var serverSMS = {
 var smartcrash = smartcrash || { };
 
 smartcrash.sendSms = function(number, message) {
-    var message = {
-        body: messasge,
+    var contents = {
+        body: message,
         to: number, // Text this number
         from: serverSMS.serverNumber // outgoing number - set in twilio dashboard TODO: see if we can pull from the twilio.RestClient
     };
 
-    twilioClient.messages.create(message, function(err, message) {
+    twilioClient.messages.create(contents, function(err, message) {
         console.error(err.message);
     });
 }
