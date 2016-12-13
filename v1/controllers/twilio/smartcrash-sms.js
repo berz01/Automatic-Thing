@@ -40,7 +40,7 @@ exports.sendSmsTwiml = function(req, res) {
 
 
 exports.crashDetection = function(req, res){
-    if(req.body.crashDetection){
+    if(req.body.crashDetection || req.params.status){
       smartcrash.sendSms(clientSms.numberOfCustomer, defaultCrashMessage);
     }
 };

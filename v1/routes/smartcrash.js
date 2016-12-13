@@ -15,8 +15,9 @@ api.use(bodyParser.urlencoded({
 api.use(session({
     secret: 'sassy'
 }));
-
+s
 api.post("/crash/:status", smartcrash.crashDetection);
+api.post("/crash", smartcrash.crashDetection);
 api.post("/sms", smartcrash.sendSms);
 api.post("/test", smartcrash.testSms);
 // api.post("/users", smartcrash.getUsers);
