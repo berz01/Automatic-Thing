@@ -25,13 +25,13 @@ exports.testSms = function(req, res){
 }
 
 exports.sendSms = function(req, res) {
-    smartcrash.sendSms(clientSms.numberOfCustomer, smartcrash.smartCrashResponse(req.body.Body));
+    smartcrash.sendSms(clientSms.numberOfCustomer, smartcrash.crashResponse(req.body.Body));
 };
 
 
 exports.sendSmsTwiml = function(req, res) {
     var twiml = new twilio.TwimlResponse();
-    twiml.message(clientSms.numberOfCustomer, smartcrash.smartCrashResponse(req.body.Body));
+    twiml.message(clientSms.numberOfCustomer, smartcrash.crashResponse(req.body.Body));
     res.writeHead(200, {
         'Content-Type': 'text/xml'
     });
@@ -40,7 +40,7 @@ exports.sendSmsTwiml = function(req, res) {
 
 
 exports.crashDetection = function(req, res){
-    if(req.body.crashDetection || req.params.status){
+    if(req.body.crash || req.params.status){
       smartcrash.sendSms(clientSms.numberOfCustomer, defaultCrashMessage);
     }
     res.send('Crash Detection hit');
