@@ -16,7 +16,7 @@ api.use(session({
     secret: 'sassy'
 }));
 
-api.post("/sms/:status", smartcrash.sendSms);
+api.post("/crash/:status", smartcrash.crashDetection);
 api.post("/sms", smartcrash.sendSms);
 api.post("/test", smartcrash.testSms);
 // api.post("/users", smartcrash.getUsers);

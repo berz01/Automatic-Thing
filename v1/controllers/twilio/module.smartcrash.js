@@ -5,14 +5,9 @@ var authToken = '342368f85e36b5174b5cdcb87e98a56e'; // Your Auth Token from www.
 // Send using twilito rest client
 var twilioClient = new twilio.RestClient(accountSid, authToken);
 
-// Dummy Data, should coem from another service, including twilioClient
+// Dummy Data, should come from another service, including twilioClient 
 var serverSMS = {
     serverNumber: '+14702357839',
-    defaultCrashMessage: "Our algorithmn has detected you have been in a wreck. Please respond with a yes if you have been in a wreck, No if you havent, and Emergency if you need our HERO truck to come by"
-};
-
-var userProfile = {
-    numberOfCustomer: "+18502284585"
 };
 
 var smartcrash = smartcrash || { };
@@ -20,7 +15,7 @@ var smartcrash = smartcrash || { };
 smartcrash.sendSms = function(number, message) {
     var message = {
         body: messasge,
-        to: userProfile.numberOfCustomer, // Text this number
+        to: number, // Text this number
         from: serverSMS.serverNumber // outgoing number - set in twilio dashboard TODO: see if we can pull from the twilio.RestClient
     };
 
