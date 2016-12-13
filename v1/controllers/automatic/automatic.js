@@ -11,7 +11,7 @@
  * bluebird - http://bluebirdjs.com/docs/getting-started.html
  * Request-Promise - https://github.com/request/request-promise/
  */
-var rp = require('request-promise');
+
 
 // Add your automatic client id and client secret here or as environment variables
 const AUTOMATIC_CLIENT_ID = process.env.AUTOMATIC_CLIENT_ID || '2ee3c7c2f4b652fc1ee1';
@@ -25,84 +25,34 @@ const oauth2 = require('simple-oauth2')({
 });
 
 
+const automatic = require('./autopromise.js');
 // Authorization uri definition
 const authorizationUri = oauth2.authCode.authorizeURL({
     scope: 'scope:user:profile scope:trip scope:location scope:vehicle:profile scope:vehicle:events scope:behavior'
 });
 
-var automatic = automatic || {
-    api: {}
-};
-
-automatic.trips = function(req) {
-    // return body.results;
-    return rp.get({
-        uri: "https://api.automatic.com/trip/",
-        headers: {
-            Authorization: 'Bearer ' + req.session.token.token.access_token
-        },
-        json: true
-    });
-}
-
-automatic.users = function(req) {
-    // user = body;
-
-    return rp.get({
-        uri: "https://api.automatic.com/user/me/",
-        headers: {
-            Authorization: 'Bearer ' + req.session.token.token.access_token
-        },
-        json: true
-    });
-}
-
-automatic.vehicles = function(req) {
-    // vehicle = body;
-
-    return rp.get({
-        uri: "https://api.automatic.com/vehicle/1/",
-        headers: {
-            Authorization: 'Bearer ' + req.session.token.token.access_token
-        },
-        json: true
-    });
-}
-
-automatic.vehicle = function(req) {
-    // vehicle = body.results[0];
-
-    return rp.get({
-        uri: "https://api.automatic.com/vehicle/",
-        headers: {
-            Authorization: 'Bearer ' + req.session.token.token.access_token
-        },
-        json: true
-    });
-}
-
-automatic.api.trips = function(req, res){
+exports.trips = function(req, res){
   automatic.trips(req)
     .then(function(result){
     res.send(result);
   });
 }
 
-automatic.api.users = function(req, res){
+exports.users = function(req, res){
   automatic.users(req)
     .then(function(result){
     res.send(result);
   });
 }
 
-automatic.api.vehicles = function(req, res){
+exports.vehicles = function(req, res){
   automatic.vehicles(req)
     .then(function(result){
     res.send(result);
   });
 }
 
-automatic.api.vehicle = function(req, res){
+exports.vehicle = function(req, res){
   automatic.vehicle(eq)
     .then(function(result){
     res.send(result);
@@ -110,17 +60,17 @@ automatic.api.vehicle = function(req, res){
 }
 
 // Initial page redirecting to Automatic's oAuth page
-automatic.auth = function(req, res, next){
+exports.auth = function(req, res, next){
     res.redirect(authorizationUri);
 }
 
-automatic.dashboard = function(req, res) {
+exports.dashboard = function(req, res) {
     console.log("/dashboard");
     res.render('dashboard-new', {});
 }
 
 
-automatic.welcome = function(req, res) {
+exports.welcome = function(req, res) {
     if (req.session.token) {
         // Display token to authenticated user
         console.log('Automatic access token', req.session.token.token.access_token);
@@ -130,5 +80,3 @@ automatic.welcome = function(req, res) {
         return res.redirect('/');
     }
 }
-
-module.exports = automatic;

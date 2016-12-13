@@ -1,14 +1,14 @@
+var autoapi = require('../controllers/automatic/automatic.js');
 var express = require('express');
+
 var api = express.Router();
 
-var automatic = require('../controllers/automatic.js');
+api.get('/trips', autoapi.trips);
+api.get('/users', autoapi.users);
+api.get('/vehicles', autoapi.vehicles);
+api.get('/vehicle', autoapi.vehicle);
+api.get('/auth', autoapi.auth);
+api.get('/dashboard', autoapi.dashboard);
+api.get('/welcome', autoapi.welcome);
 
-api.get('/trips', automatic.api.trips);
-api.get('/users', automatic.api.users);
-api.get('/vehicles', automatic.api.vehicles);
-api.get('/vehicle', automatic.api.vehicle);
-api.get('/auth', automatic.auth);
-api.get('/dashboard', automatic.dashboard);
-api.get('/welcome', automatic.welcome);
-
-module.export = api;
+module.exports = api;

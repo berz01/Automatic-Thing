@@ -4,11 +4,14 @@ const express = require('express');
 const session = require('express-session');
 const Promise = require('bluebird');
 const https = require('https');
-const autoapi = require('./v1/controllers/automatic/automatic.js');
+const autopromise = require('./v1/controllers/automatic/autopromise.js');
 
 // Server settings
 const port = process.env.PORT || 8080;
 const app = express();
+
+// Setting view engine
+app.set('view engine', 'ejs');
 
 // Local caching
 var trips;
@@ -84,13 +87,13 @@ app.get('/redirect', (req, res) => {
         // This is where you could save the `token` to a database for later use
         req.session.token = oauth2.accessToken.create(result);
 
-        autoapi.trips(req)
+        autopromise.trips(req)
             .then(function(body) {
-              trips = body.results;
-              res.redirect('/trips');
+                trips = body.results;
+                res.redirect('/trips');
             })
-            .catch(function(err){
-              console.log(err);
+            .catch(function(err) {
+                console.log(err);
             });
     }
 
@@ -110,21 +113,23 @@ app.get('/trips', function(req, res) {
     });
 });
 
+var parallel = function(req) {
+    return Promise.all([autopromise.users(req), autopromise.vehicle(req)])
+}
+
+var loadAllAutomaticInfo = function(user, vehicle) {
+    res.render('claims', {
+        trips: trips,
+        vehicle: vehicle.results[0],
+        user: user
+    })
+};
+
 app.get('/claims', function(req, res) {
     console.log("/claims");
 
-    var parallel = function(req) {
-        return Promise.all([autoapi.users(req), autoapi.vehicle(req)])
-    }
-
     parallel(req)
-        .spread(function(user, vehicle) {
-            res.render('claims', {
-                trips: trips,
-                vehicle: vehicle.results[0],
-                user: user
-            })
-        })
+        .spread(loadAllAutomaticInfo)
         .catch(function(err) {
             console.log(err);
         });
@@ -134,18 +139,8 @@ app.get('/claims', function(req, res) {
 app.get('/claims2', function(req, res) {
     console.log("/claims2");
 
-    var parallel = function(req) {
-        return Promise.all([autoapi.users(req), autoapi.vehicle(req)])
-    }
-
     parallel(req)
-        .spread(function(user, vehicle) {
-            res.render('claims', {
-                trips: trips,
-                vehicle: vehicle.results[0],
-                user: user
-            })
-        })
+        .spread(loadAllAutomaticInfo)
         .catch(function(err) {
             console.log(err);
         });
@@ -154,19 +149,9 @@ app.get('/claims2', function(req, res) {
 app.get('/claims3', function(req, res) {
     console.log("/claims3");
 
-    var parallel = function(req) {
-        return Promise.all([autoapi.users(req), autoapi.vehicle(req)])
-    }
-
     parallel(req)
-        .spread(function(user, vehicle) {
-            res.render('claims', {
-                trips: trips,
-                vehicle: vehicle.results[0],
-                user: user
-            })
-        })
-        .catch(function(err){
+        .spread(loadAllAutomaticInfo)
+        .catch(function(err) {
             console.log(err);
         });
 });
@@ -174,18 +159,8 @@ app.get('/claims3', function(req, res) {
 app.get('/claims', function(req, res) {
     console.log("/claims");
 
-    var parallel = function(req) {
-        return Promise.all([autoapi.users(req), autoapi.vehicle(req)])
-    }
-
     parallel(req)
-        .spread(function(user, vehicle) {
-            res.render('claims', {
-                trips: trips,
-                vehicle: vehicle.results[0],
-                user: user
-            })
-        })
+        .spread(loadAllAutomaticInfo)
         .catch(function(err) {
             console.log(err);
         });
@@ -196,12 +171,13 @@ app.get('/claims4', function(req, res) {
     res.render('<a href="http://i.imgur.com/8jjUtbz.png"> <img src="http://i.imgur.com/8jjUtbz.png" title="source:imgur.com"></a>');
 });
 
-// Setting view engine
-app.set('view engine', 'ejs');
+
 
 // New API
-app.use('/api/v1', require("./v1/api"));
+app.use('/api/v1/automatic', require('./v1/routes/automatic'));
+app.use('/api/v1/smartcrash', require('./v1/routes/smartcrash'));
 
+// Filters
 app.get('/api/v1/*', function(req, res, next) {
     console.log("Hit Auth Filter For Access");
     next();
