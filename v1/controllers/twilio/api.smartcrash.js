@@ -24,7 +24,7 @@ exports.testSms = function(req, res){
   res.end(twiml.toString());
 }
 
-exports.sendSms = function(req, res) {
+exports.incomingSms = function(req, res) {
     smartcrash.sendSms(clientSms.numberOfCustomer, smartcrash.crashResponse(req.body.Body));
 };
 
@@ -42,8 +42,10 @@ exports.sendSmsTwiml = function(req, res) {
 exports.crashDetection = function(req, res){
     if(req.body.crash || req.params.status){
       smartcrash.sendSms(clientSms.numberOfCustomer, defaultCrashMessage);
+      return res.send('Successful');
+    } else {
+      return res.send('Failure');
     }
-    res.send('Crash Detection hit');
 };
 
 exports.getUsers = smartcrash.getUsers;

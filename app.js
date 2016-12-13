@@ -165,27 +165,22 @@ app.get('/claims3', function(req, res) {
             console.log(err);
         });
 });
-//
-// app.get('/claims', function(req, res) {
-//     console.log("/claims");
-//
-//     parallel(req)
-//         .spread(function(user, vehicle) {
-//             res.render('claims4', {
-//                 trips: trips,
-//                 vehicle: vehicle.results[0],
-//                 user: user
-//             })
-//         })
-//         .catch(function(err) {
-//             console.log(err);
-//         });
-// });
 
 app.get('/claims4', function(req, res) {
     console.log("/claims4");
-    res.send('<a href="http://i.imgur.com/8jjUtbz.png"> <img src="http://i.imgur.com/8jjUtbz.png" title="source:imgur.com"></a>');
-});
+
+    parallel(req)
+        .spread(function(user, vehicle) {
+            res.render('claims4', {
+                trips: trips,
+                vehicle: vehicle.results[0],
+                user: user
+            })
+        })
+        .catch(function(err) {
+            console.log(err);
+        });
+}); 
 
 // New API
 app.use('/api/v1/automatic', require('./v1/routes/automatic'));

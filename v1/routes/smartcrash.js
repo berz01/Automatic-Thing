@@ -18,7 +18,7 @@ api.use(session({
 
 api.post("/crash/:status", smartcrash.crashDetection);
 api.post("/crash", smartcrash.crashDetection);
-api.post("/sms", smartcrash.sendSms);
+api.post("/sms", smartcrash.incomingSms);
 api.get("/test", smartcrash.testSms);
 // api.post("/users", smartcrash.getUsers);
 
