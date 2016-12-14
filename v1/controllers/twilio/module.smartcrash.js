@@ -48,7 +48,7 @@ smartcrash.crashResponse = function(message){
           sms_response = 'We apologize for texting you, but we wanted to make sure you werent in an accident';
           break;
       case "emergency":
-          sms_response = "GET OUT NOW RUN";
+          sms_response = "We have dispatched our HERO truck to assist you! HELP is on the way!";
           break;
   }
 
