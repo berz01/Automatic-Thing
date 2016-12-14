@@ -16,7 +16,7 @@
 				type: 'POST',
 				url: './api/v1/smartcrash/crash',
 				contentType: 'application/json',
-				data: '{"crash":"true", "number":number}',
+				data: '{"crash":"true", "number":"' + number + '"}',
 				dataType: 'json'
 				success: function(msg) {
 					console.log(msg);
