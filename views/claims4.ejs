@@ -11,7 +11,7 @@
 	<title>CLAIM GENERATOR</title>
 	<script>
 		var sendDemoSms = function() {
-			var number = $('#inputNumber').value;
+			var number = $('#inputNumber').val();
 			$.ajax({
 				type: 'POST',
 				url: './api/v1/smartcrash/crash',
