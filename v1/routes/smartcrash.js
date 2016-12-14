@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var api = express.Router();
 
-var smartcrash = require('../controllers/twilio/api.smartcrash.js');
+var smartcrashApi = require('../controllers/twilio/api.smartcrash.js');
 
 api.use(bodyParser.json()); // support json encoded bodies
 api.use(bodyParser.urlencoded({
@@ -16,10 +16,10 @@ api.use(session({
     secret: 'sassy'
 }));
 
-api.post("/crash/:status", smartcrash.crashDetection);
-api.post("/crash", smartcrash.crashDetection);
-api.post("/sms", smartcrash.incomingSms);
-api.get("/test", smartcrash.testSms);
+api.post("/crash/:status", smartcrashApi.crashDetection);
+api.post("/crash", smartcrashApi.crashDetection);
+api.post("/sms", smartcrashApi.incomingSms);
+api.get("/test", smartcrashApi.testSms);
 // api.post("/users", smartcrash.getUsers);
 
 

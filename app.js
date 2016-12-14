@@ -4,7 +4,7 @@ const express = require('express');
 const session = require('express-session');
 const Promise = require('bluebird');
 const https = require('https');
-const autopromise = require('./v1/controllers/automatic/autopromise.js');
+const autopromise = require('./v1/controllers/automatic/module.automatic.js');
 
 // Server settings
 const port = process.env.PORT || 8080;
@@ -131,7 +131,6 @@ app.get('/claims', function(req, res) {
         .catch(function(err) {
             console.log(err);
         });
-
 });
 
 app.get('/claims2', function(req, res) {
@@ -181,7 +180,7 @@ app.get('/claims4', function(req, res) {
             console.log(err);
         });
 });
- 
+
 // New API
 app.use('/api/v1/automatic', require('./v1/routes/automatic'));
 app.use('/api/v1/smartcrash', require('./v1/routes/smartcrash'));

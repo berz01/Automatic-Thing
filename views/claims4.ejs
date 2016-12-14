@@ -14,26 +14,35 @@
 <body>
 	<br />
 	<div class="container">
-		<div class="col-md-12">
-			<nav class="navbar navbar-default" role="navigation">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="#">Car2Claim Dashboard</a>
-				</div>
-				<div>
-					<p class="navbar-text navbar-right" style="margin-right:10%">
-						Signed In: Barrett
-					</p>
-				</div>
-			</nav>
-		</div>
-		<br />
-		<div class="col-md-12 well well-lg" style="background-color: #E5DB97;">
-			<div style="background-color: #EEEEEE; padding : 10px;max-width:100%; max-height:100%;">
-				<a href="http://i.imgur.com/8jjUtbz.png"> <img src="http://i.imgur.com/8jjUtbz.png" title="source:imgur.com"></a>
+		<form class="form-horizontal" action="/api/v1/smartcrash/crash">
+			<div class="col-md-12">
+				<nav class="navbar navbar-default" role="navigation">
+					<div class="navbar-header">
+						<a class="navbar-brand" href="#">Car2Claim Dashboard</a>
+					</div>
+					<div>
+						<p class="navbar-text navbar-right" style="margin-right:10%">
+							Signed In: Barrett
+						</p>
+					</div>
+				</nav>
 			</div>
-			<br>
-		</div>
+			<br />
+			<div class="col-md-12 well well-lg" style="background-color: #E5DB97;">
+				<div style="background-color: #EEEEEE; padding : 10px;max-width:100%; max-height:100%;">
+					<a href="./img/example_sms.png"> <img src="./img/example_sms.png"></a>
+				</div>
+				<br>
+			</div>
+			<div class="input-group"  style="padding-bottom:20px">
+				<span class="input-group-addon">
+					<i class="glyphicon glyphicon-envelope"></i>
+				</span>
+				<input type="text" class="form-control" name="number" id="inputNumber" placeholder="Number For Example Text" value="8502284585">
+			</div>
+			<input type="submit" value="Example Text" />
 	</div>
+	</form>
 	<br />
 	<div class="col-md-12 well well-lg" style="background-color: #E5DB97;">
 		<form action="/dashboard">

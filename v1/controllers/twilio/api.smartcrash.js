@@ -29,14 +29,14 @@ exports.incomingSms = function(req, res) {
 };
 
 
-exports.sendSmsTwiml = function(req, res) {
-    var twiml = new twilio.TwimlResponse();
-    twiml.message(clientSms.numberOfCustomer, smartcrash.crashResponse(req.body.Body));
-    res.writeHead(200, {
-        'Content-Type': 'text/xml'
-    });
-    res.end(twiml.toString());
-};
+// exports.sendSmsTwiml = function(req, res) {
+//     var twiml = new twilio.TwimlResponse();
+//     twiml.message(clientSms.numberOfCustomer, smartcrash.crashResponse(req.body.Body));
+//     res.writeHead(200, {
+//         'Content-Type': 'text/xml'
+//     });
+//     res.end(twiml.toString());
+// };
 
 
 exports.crashDetection = function(req, res){
