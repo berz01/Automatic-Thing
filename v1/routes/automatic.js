@@ -1,4 +1,4 @@
-var autoapi = require('../controllers/automatic/automatic.js');
+var autoapi = require('../controllers/automatic/api.automatic.js');
 var express = require('express');
 
 var api = express.Router();
