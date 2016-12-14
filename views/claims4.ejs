@@ -9,12 +9,23 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>CLAIM GENERATOR</title>
+	<script>
+	var sendDemoSms = function(number){
+		$.ajax({
+			url: './api/v1/smartcrash/crash',
+			contentType: 'application/json',
+			data: {"crash":"true", "number":number},
+			dataType: 'json',
+			type: 'POST'
+		});
+	};
+	</script>
 </head>
 
 <body>
 	<br />
 	<div class="container">
-		<form class="form-horizontal" action="/api/v1/smartcrash/crash">
+		<form class="form-horizontal" action="sendDemoSms(inputNumber)">
 			<div class="col-md-12">
 				<nav class="navbar navbar-default" role="navigation">
 					<div class="navbar-header">
@@ -30,7 +41,7 @@
 			<br />
 			<div class="col-md-12 well well-lg" style="background-color: #E5DB97;">
 				<div style="background-color: #EEEEEE; padding : 10px;max-width:100%; max-height:100%;">
-					<a href="./img/example_sms.png"> <img src="./img/example_sms.png"></a>
+					<a href="img/example_sms.png"> <img src="img/example_sms.png"></a>
 				</div>
 				<br>
 			</div>
