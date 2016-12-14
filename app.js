@@ -180,8 +180,8 @@ app.get('/claims4', function(req, res) {
         .catch(function(err) {
             console.log(err);
         });
-}); 
-
+});
+ 
 // New API
 app.use('/api/v1/automatic', require('./v1/routes/automatic'));
 app.use('/api/v1/smartcrash', require('./v1/routes/smartcrash'));
