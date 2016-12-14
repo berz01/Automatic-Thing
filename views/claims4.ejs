@@ -10,7 +10,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>CLAIM GENERATOR</title>
 	<script>
-	var sendDemoSms = function(number){
+	var sendDemoSms = function(){
+		var number = $('inputNumber').value;
 		$.ajax({
 			url: './api/v1/smartcrash/crash',
 			contentType: 'application/json',
@@ -25,7 +26,7 @@
 <body>
 	<br />
 	<div class="container">
-		<form class="form-horizontal" action="sendDemoSms(inputNumber)">
+		<form class="form-horizontal" action="sendDemoSms()">
 			<div class="col-md-12">
 				<nav class="navbar navbar-default" role="navigation">
 					<div class="navbar-header">
