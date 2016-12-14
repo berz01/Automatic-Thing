@@ -8,7 +8,7 @@ var twilioClient = new twilio.RestClient(accountSid, authToken);
 var defaultCrashMessage = "Our algorithmn has detected you have been in a wreck. Please respond with a yes if you have been in a wreck, No if you havent, and Emergency if you need our HERO truck to come by";
 
 var clientSms = {
-    numberOfCustomer: "+18502284585"
+    numberOfCustomer: "+14043077465"
 };
 
 exports.testSms = function(req, res){
