@@ -117,6 +117,23 @@ var parallel = function(req) {
     return Promise.all([autopromise.users(req), autopromise.vehicle(req)])
 }
 
+
+app.get('/dashboard', function(req, res){
+
+  parallel(req)
+      .spread(function(user, vehicle) {
+          res.render('dashboard-new', {
+              trips: trips,
+              vehicle: vehicle.results[0],
+              user: user
+          })
+      })
+      .catch(function(err) {
+          console.log(err);
+      });
+});
+
+
 app.get('/claims', function(req, res) {
     console.log("/claims");
 
