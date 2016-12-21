@@ -26,7 +26,8 @@ exports.testSms = function(req, res){
 
 exports.incomingSms = function(req, res) {
     smartcrash.sendSms(clientSms.numberOfCustomer, smartcrash.crashResponse(req.body.Body));
-    res.send('Incoming Message Received');
+    console.log("You should see this");
+    return res.send('Incoming Message Received');
 };
 
 
