@@ -26,6 +26,7 @@ exports.testSms = function(req, res){
 
 exports.incomingSms = function(req, res) {
     smartcrash.sendSms(clientSms.numberOfCustomer, smartcrash.crashResponse(req.body.Body));
+    res.send('Incoming Message Received');
 };
 
 
@@ -41,7 +42,7 @@ exports.incomingSms = function(req, res) {
 
 exports.crashDetection = function(req, res){
     if(req.body.crash){
-      clientSms.numberOfCustomer = req.body.number != null ? req.body.number : clientSms.numberOfCustomer; 
+      clientSms.numberOfCustomer = req.body.number != null ? req.body.number : clientSms.numberOfCustomer;
       smartcrash.sendSms(clientSms.numberOfCustomer, defaultCrashMessage);
       return res.send('Successful');
     } else {
